@@ -4,9 +4,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping; 
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam; 
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("country")
@@ -45,9 +45,13 @@ public class CountryController {
     }
 
     // ----- 削除画面 -----
-    @GetMapping("/delete")
-    public String deleteCountryForm(Model model) {
-        // country/delete.htmlに画面遷移
+    @GetMapping(value = { "/delete", "/delete/{code}/" })
+    public String deleteCountryForm(@PathVariable(name = "code", required = false) String code, Model model) {
+        // codeが指定されていたら結果、無ければ空のクラスを設定
+        Country country = code != null ? service.getCountry(code) : new Country();
+        // Modelに登録
+        model.addAttribute("country", country);
+        // country/detail.htmlに画面遷移
         return "country/delete";
     }
 
